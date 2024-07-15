@@ -1,0 +1,59 @@
+@Library('mylibrary')_
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('continous download')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.gitDownload("maven")
+                }
+            }
+        }
+        stage('continous build')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.buildArtifact()
+                }
+            }
+        }
+        stage('continous deployment')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.deployTomcat("Declarativepipelinewithsharedlibraries","172.31.22.133","testapp")
+                }
+            }
+        }
+        stage('continous testing')
+        {
+            steps
+            {
+                script
+                {
+                    cicd.gitDownload("FunctionalTesting")
+                    cicd.runSelenium("Declarativepipelinewithsharedlibraries")
+                }
+            }
+        }
+        stage('continous delivery')
+        {
+            steps
+            {
+                script
+                {
+                     cicd.deployTomcat("Declarativepipelinewithsharedlibraries","172.31.18.10","prodapp")
+                }
+            }
+        }
+    }
+}
